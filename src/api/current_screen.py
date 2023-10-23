@@ -2,13 +2,14 @@ import pygetwindow as gw
 import pyautogui
 import cv2
 import numpy as np
-import os
-from src.config import WINDOW_OFFSET, WINDOW_OFFSET_TOP, REFERENCE_IMAGES_DIR, SIMILARITY_THRESHOLD
+from src.utils import show_image
+from src.config import WINDOW_OFFSET, WINDOW_OFFSET_TOP, OCR_SAMPLES, OCR_WHITE_THRESHOLD, SCREEN_TEXT
 import pyautogui
 import pytesseract
+import re
 
 
-def find_and_screenshot_window(window_title, save=False):
+def find_and_screenshot_window(window_title, num_screenshots=1):
     try:
         window = gw.getWindowsWithTitle(window_title)[0]      
         pyautogui.sleep(1)
@@ -22,85 +23,104 @@ def find_and_screenshot_window(window_title, save=False):
           window.height - WINDOW_OFFSET_TOP - WINDOW_OFFSET
         )
 
-        screenshot = pyautogui.screenshot(region=region)
-        screenshot_np = np.array(screenshot)
-        screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2RGB)
-
-        if (save):
-          cv2.imwrite('assets/window_screenshot.png', screenshot_np)
+        screenshots = []
+        for _ in range(num_screenshots):
+            pyautogui.sleep(0.3)
+            screenshot = pyautogui.screenshot(region=region)
+            screenshot_np = np.array(screenshot)
+            screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2RGB)
+            screenshots.append(screenshot_np)
 
         pyautogui.sleep(3)
         window.minimize()
 
-        return screenshot_np
+        return screenshots
 
     except IndexError:
         print("Window not found. Please ensure the window is open and the title is correct.")
     except Exception as e:
         print("An error occurred:", str(e))
 
-def match_screen(screenshot, reference_image):
-    # Convert images to grayscale
-    screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-    reference_gray = cv2.cvtColor(reference_image, cv2.COLOR_BGR2GRAY)
 
-    # Compute ORB keypoints and descriptors
-    orb = cv2.ORB_create()
-    kp1, des1 = orb.detectAndCompute(screenshot_gray, None)
-    kp2, des2 = orb.detectAndCompute(reference_gray, None)
+def compile_text_samples(screenshots):
+    detected_texts = set()
 
-    # Match descriptors
-    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-    matches = bf.match(des1, des2)
+    texts = []
 
-    # Compute similarity
-    similarity = len(matches) / min(len(kp1), len(kp2))
-    return similarity
+    for screenshot in screenshots:
+        texts.append(detect_text_thresholded(screenshot))
 
-def recognize_game_screen(screenshot_np):
-    similarities = {}
+    for _, i in enumerate(range(2)):
+        texts.append(detect_text_no_pre(screenshots[i]))
 
-    for filename in os.listdir(REFERENCE_IMAGES_DIR):
-        if filename.endswith('.png'):
-            reference_image = cv2.imread(os.path.join(REFERENCE_IMAGES_DIR, filename))
-            similarities[filename] = match_screen(screenshot_np, reference_image)
-
-    print(similarities)
-
-    return max(similarities, key=similarities.get).split('.')[0]
-
-def recognize_game_screen_opencv(screenshot_np):
-    max_similarity = -1
-    best_match_filename = None
+    for text in texts:
+        text = text.replace('\n', ' ')
+        text = re.sub(r'[^a-zA-Z0-9 ]', ' ', text).lower()  # Keep only alphanumeric characters and spaces, then convert to lowercase
+        
+        for word in text.split():
+            detected_texts.add(word)
     
-    for filename in os.listdir(REFERENCE_IMAGES_DIR):
-        if filename.endswith('.png'):
-            reference_image = cv2.imread(os.path.join(REFERENCE_IMAGES_DIR, filename))
-            similarity = find_icon_on_screen(screenshot_np, reference_image)
-            if similarity > max_similarity:
-                max_similarity = similarity
-                best_match_filename = filename
-    
-    if best_match_filename:
-        return best_match_filename
-    else:
-        return None
+    return detected_texts
 
-def find_icon_on_screen(screenshot_np, reference_image):
-    # Get dimensions of the icon
-    h, w = reference_image.shape[:-1]
 
-    # Convert images to grayscale (optional, depending on your use case)
-    screenshot_gray = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2GRAY)
-    reference_gray = cv2.cvtColor(reference_image, cv2.COLOR_BGR2GRAY)
-
-    # Apply template Matching
-    res = cv2.matchTemplate(screenshot_gray, reference_gray, cv2.TM_CCOEFF_NORMED)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-    
-    return max_val  # Returning the maximum similarity value
-
-def detect_text(screenshot_np):
+def detect_text_no_pre(screenshot_np):
     gray = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(gray, (1, 1), 0)
-    return pytesseract.image_to_string(blurred)
+
+    return pytesseract.image_to_string(screenshot_np)
+
+def filter_small_components(binary_img, min_area=50):
+    """
+    Remove small connected components from a binary image based on a given area threshold.
+    """
+    # Find all connected components
+    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(binary_img, connectivity=8)
+    
+    # Create an output image, initialized as all zeros (black)
+    output = np.zeros_like(binary_img)
+    
+    # Loop through all connected component labels
+    for i in range(1, num_labels):
+        # If the area of the connected component is above the threshold, add it to the output image
+        if stats[i, cv2.CC_STAT_AREA] > min_area:
+            output[labels == i] = 255
+            
+    return output
+
+def detect_text_thresholded(screenshot_np, show_cleaned=False):
+    # Convert image to grayscale
+    gray = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2GRAY)
+    
+    # Keep pixels above the threshold (retain different shades of gray)
+    thresholded = cv2.inRange(gray, OCR_WHITE_THRESHOLD, 255)
+
+    # Filter out small components
+    filtered = filter_small_components(thresholded)
+    
+    if show_cleaned:
+        show_image(filtered)
+    
+    return pytesseract.image_to_string(filtered)
+
+def detect_screen(words):
+    # Filter out words that are not in any include list
+    valid_words = set(word for screen_data in SCREEN_TEXT.values() for word in screen_data['include'])
+    filtered_words = set(words) & valid_words
+    
+    max_matches = 0
+    likely_screen = None
+    
+    for screen, criteria in SCREEN_TEXT.items():
+        matching_words = set(criteria['include']) & filtered_words
+        match_ratio = len(matching_words) / len(criteria['include'])
+        
+        # Update likely screen if a higher match ratio is found
+        if match_ratio > max_matches:
+            max_matches = match_ratio
+            likely_screen = screen
+            
+        # Optional: If a screen's criteria fully matches, you could break out early for efficiency
+        if match_ratio == 1:
+            break
+
+    # Return the screen with the highest match ratio
+    return likely_screen

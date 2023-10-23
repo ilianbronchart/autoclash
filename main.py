@@ -1,8 +1,13 @@
-from src.api.current_screen import find_and_screenshot_window, recognize_game_screen, recognize_game_screen_opencv, detect_text
-from src.config import WINDOW_TITLE
+from src.api.current_screen import find_and_screenshot_window, compile_text_samples, detect_text_thresholded, detect_screen
+from src.config import WINDOW_TITLE, OCR_SAMPLES, SCREEN_TEXT
 
 if __name__ == '__main__':
-  screenshot_np = find_and_screenshot_window(WINDOW_TITLE)
-  screen = recognize_game_screen_opencv(screenshot_np)
-  print(screen)
-  print(detect_text(screenshot_np))
+    screenshots = find_and_screenshot_window(WINDOW_TITLE, OCR_SAMPLES)
+
+    words = compile_text_samples(screenshots)
+    print(words)
+    
+    print()
+
+    screen = detect_screen(words)
+    print(screen)
