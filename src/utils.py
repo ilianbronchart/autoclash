@@ -2,44 +2,30 @@ import pygetwindow as gw
 import pyautogui
 import cv2
 import numpy as np
-from time import sleep
-from config import OFFSET, OFFSET_TOP
+from src.config import WINDOW_OFFSET, WINDOW_OFFSET_TOP
 
 def find_and_screenshot_window(window_title):
     try:
-        # Find the window by its title
-        window = gw.getWindowsWithTitle(window_title)[0]
-                
-        # Wait a moment for the window to minimize
+        window = gw.getWindowsWithTitle(window_title)[0]      
         pyautogui.sleep(1)
-
-        # Restore the window (bring to front)
         window.restore()
-        
-        # Wait a moment for the window to restore
         pyautogui.sleep(1)
 
-        # Define the region to capture (excluding the top bar)
-        region = (window.left + OFFSET, window.top + OFFSET_TOP, window.width - 2 * OFFSET, window.height - OFFSET_TOP - OFFSET)
+        region = (
+          window.left + WINDOW_OFFSET,
+          window.top + WINDOW_OFFSET_TOP, 
+          window.width - 2 * WINDOW_OFFSET, 
+          window.height - WINDOW_OFFSET_TOP - WINDOW_OFFSET
+        )
 
-        # Take a screenshot of the window's contents
         screenshot = pyautogui.screenshot(region=region)
-        
-        # Convert the screenshot to a NumPy array
         screenshot_np = np.array(screenshot)
-        
-        # Convert the color space from BGR to RGB
         screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2RGB)
-        
-        # Save the screenshot
-        cv2.imwrite('window_screenshot.png', screenshot_np)
+        cv2.imwrite('assets/window_screenshot.png', screenshot_np)
 
-        sleep(2)
+        pyautogui.sleep(3)
         window.minimize()
 
-        
-        print("Screenshot taken and saved as 'window_screenshot.png'")
-        
     except IndexError:
         print("Window not found. Please ensure the window is open and the title is correct.")
     except Exception as e:
