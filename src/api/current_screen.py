@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 import os
 from src.config import WINDOW_OFFSET, WINDOW_OFFSET_TOP, REFERENCE_IMAGES_DIR, SIMILARITY_THRESHOLD
+import pyautogui
+
 
 def find_and_screenshot_window(window_title, save=False):
     try:
@@ -55,11 +57,13 @@ def match_screen(screenshot, reference_image):
     return similarity
 
 def recognize_game_screen(screenshot_np):
+    similarities = {}
+
     for filename in os.listdir(REFERENCE_IMAGES_DIR):
         if filename.endswith('.png'):
             reference_image = cv2.imread(os.path.join(REFERENCE_IMAGES_DIR, filename))
-            similarity = match_screen(screenshot_np, reference_image)
-            if similarity > SIMILARITY_THRESHOLD:
-                return filename.split('.')[0]  # Return the screen name without the file extension
+            similarities[filename] = match_screen(screenshot_np, reference_image)
 
-    return "Unknown Screen"
+    print(similarities)
+
+    return max(similarities, key=similarities.get).split('.')[0]
