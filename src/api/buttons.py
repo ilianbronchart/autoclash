@@ -5,12 +5,20 @@ from src.config import SCREENS, TEMPLATES_DIR, REFERENCE_SCREEN_SIZE
 
 
 def rescale_template(template, target_screenshot_size):
-    # Calculate scaling factors
+    # Calculate scaling factors for both dimensions
     scale_width = target_screenshot_size[0] / REFERENCE_SCREEN_SIZE[0]
     scale_height = target_screenshot_size[1] / REFERENCE_SCREEN_SIZE[1]
     
+    # Choose the larger scaling factor to ensure the template fits within the screenshot 
+    # while preserving its aspect ratio
+    scale = max(scale_width, scale_height)
+    
+    # Compute the new dimensions for the template
+    new_width = int(template.shape[1] * scale)
+    new_height = int(template.shape[0] * scale)
+    
     # Rescale the template
-    rescaled_template = cv2.resize(template, None, fx=scale_width, fy=scale_height, interpolation=cv2.INTER_LINEAR)
+    rescaled_template = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
     
     return rescaled_template
 
