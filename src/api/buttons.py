@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import os
+from src.config import SCREENS, TEMPLATES_DIR
 
 def detect_button(screenshot, template):
     # Convert images to grayscale
@@ -13,7 +15,7 @@ def detect_button(screenshot, template):
     result = cv2.matchTemplate(screenshot_gray, template_gray, cv2.TM_CCOEFF_NORMED)
     
     # Set a threshold value to consider a match
-    threshold = 0.6
+    threshold = 0.8
     print(result)
     loc = np.where(result >= threshold)
     
@@ -24,3 +26,16 @@ def detect_button(screenshot, template):
     # Get the location of the first match
     for pt in zip(*loc[::-1]):
         return (pt[0], pt[1], w, h)
+    
+def detect_buttons(screenshot, templates):
+    return {template: detect_button(screenshot, templates[template]) for template in templates}
+
+def get_button_templates(screen):
+    buttons = SCREENS[screen]['buttons']
+    templates = {}
+
+    for button in buttons:
+        template = cv2.imread(os.path.join(TEMPLATES_DIR, f"{button}.png"))
+        templates[button] = template
+
+    return templates

@@ -1,5 +1,5 @@
 from src.api.current_screen import screenshot_window, detect_screen, get_window
-from src.api.buttons import detect_button
+from src.api.buttons import detect_buttons, get_button_templates
 from src.config import OCR_SAMPLES
 from src.utils import show_image
 import cv2
@@ -10,10 +10,15 @@ if __name__ == '__main__':
     print(screen)
 
     screenshot = screenshot_window(window, 1, 'assets')[0]
-    template = cv2.imread('assets/templates/attack_button.png')
-    attack_button = detect_button(screenshot, template)
-    print(attack_button)
+    templates = get_button_templates(screen)
+    buttons = detect_buttons(screenshot, templates)
 
-    x, y, w, h = attack_button
-    cv2.rectangle(screenshot, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    for button in buttons.keys():
+        if not button:
+            print(f'Could not find {button}')
+            continue
+
+        x, y, w, h = buttons[button]
+        cv2.rectangle(screenshot, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        
     show_image(screenshot)

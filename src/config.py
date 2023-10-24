@@ -4,21 +4,34 @@ SCREENSHOT_HEADER_SIZE = 32
 WINDOW_OFFSET_TOP = 31
 WINDOW_OFFSET = 10
 WINDOW_TITLE = 'Clash of Clans'
-REFERENCE_IMAGES_DIR = 'assets/reference_images'
+TEMPLATES_DIR = 'assets/templates'
 OCR_SAMPLES = 5
 OCR_WHITE_THRESHOLD = 220
 
-SCREEN_TEXT = {
-    'disconnected_screen': [
-        'anyone', 'there', 'you', 'have', 'been', 'disconnected', 'due', 'to', 'inactivity'
-    ],
-    'multiplayer_screen': [
-        'unranked', 'practice', 'single', 'player'
-    ],
-    'main_screen': [
-        'attack', 'shop'
-    ],
-    'attack_screen': [
-        'tap', 'or', 'press', 'and', 'hold', 'to', 'deploy', 'troops', 'end', 'battle', 'available', 'loot'
-    ]
+SCREENS = {
+    'disconnected_screen': {
+        'words': [
+            'anyone', 'there', 'you', 'have', 'been', 'disconnected', 'due', 'to', 'inactivity'
+        ],
+        'buttons': []
+    },
+    'multiplayer_screen': {
+        'words': [
+            'unranked', 'practice', 'single', 'player'
+        ],
+        'buttons': ['close_button', 'find_match_button']
+    },
+    'main_screen': {
+        'words': [
+            'attack', 'shop'
+        ],
+        'buttons': ['attack_button']
+    },
+    'attack_screen': {
+        'words': [
+            'tap', 'or', 'press', 'and', 'hold', 'to', 'deploy', 'troops', 'end', 'battle', 'available', 'loot'
+        ],
+        'buttons': []
+    }
 }
+

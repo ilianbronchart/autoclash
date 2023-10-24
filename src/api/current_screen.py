@@ -3,7 +3,7 @@ import pyautogui
 import cv2
 import numpy as np
 from src.utils import show_image
-from src.config import OCR_WHITE_THRESHOLD, SCREEN_TEXT, WINDOW_TITLE, SCREENSHOT_OUTER_BORDER, SCREENSHOT_HEADER_SIZE
+from src.config import OCR_WHITE_THRESHOLD, SCREENS, WINDOW_TITLE, SCREENSHOT_OUTER_BORDER, SCREENSHOT_HEADER_SIZE
 import pyautogui
 import pytesseract
 import re
@@ -108,15 +108,15 @@ def detect_screen(window, OCR_SAMPLES):
     words = compile_text_samples(screenshots)
 
     # Filter out words that are not in any include list
-    valid_words = set(word for screen_data in SCREEN_TEXT.values() for word in screen_data)
+    valid_words = set(word for screen_data in SCREENS.values() for word in screen_data['words'])
     filtered_words = set(words) & valid_words
     
     max_matches = 0
     likely_screen = None
     
-    for screen, criteria in SCREEN_TEXT.items():
-        matching_words = set(criteria) & filtered_words
-        match_ratio = len(matching_words) / len(criteria)
+    for screen, criteria in SCREENS.items():
+        matching_words = set(criteria['words']) & filtered_words
+        match_ratio = len(matching_words) / len(criteria['words'])
         
         # Update likely screen if a higher match ratio is found
         if match_ratio > max_matches:
