@@ -1,25 +1,21 @@
 from src.api.current_screen import screenshot_window, detect_screen, get_window, compile_text_samples
 from src.api.buttons import detect_buttons, get_button_templates
 from src.config import OCR_SAMPLES, REFERENCE_SCREEN_SIZE
-from src.utils import show_image
+from src.utils import show_image, show_button_rects, show_window
 import cv2
 
 if __name__ == '__main__':
     window = get_window()
+    show_window(window)
+
     screen = detect_screen(window, OCR_SAMPLES)
     print(screen)
 
     screenshot = screenshot_window(window, 1, 'assets')[0]
-
     templates = get_button_templates(screen)
-    buttons = detect_buttons(screenshot, templates)
+    buttons = detect_buttons(window, screenshot, templates)
+    # show_button_rects(screenshot, buttons)
 
-    for button in buttons.keys():
-        if not button:
-            print(f'Could not find {button}')
-            continue
+    buttons['attack_button'].click()
 
-        x, y, w, h = buttons[button]
-        cv2.rectangle(screenshot, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        
-    show_image(screenshot)
+    window.minimize()

@@ -1,7 +1,9 @@
 import cv2
 import numpy as np
 import os
+import pyautogui as pag
 from src.config import SCREENS, TEMPLATES_DIR, REFERENCE_SCREEN_SIZE
+from src.api.models import Button
 
 
 def rescale_template(template, target_screenshot_size):
@@ -52,8 +54,16 @@ def detect_button(screenshot, template):
         return (pt[0], pt[1], w, h)
 
     
-def detect_buttons(screenshot, templates):
-    return {template: detect_button(screenshot, templates[template]) for template in templates}
+def detect_buttons(window, screenshot, templates):
+    buttons = {}
+
+    for template in templates:
+        rect = detect_button(screenshot, templates[template])
+        if (rect):
+            buttons[template] = Button(window, rect)
+
+    return buttons
+
 
 def get_button_templates(screen):
     buttons = SCREENS[screen]['buttons']
@@ -64,3 +74,4 @@ def get_button_templates(screen):
         templates[button] = template
 
     return templates
+
