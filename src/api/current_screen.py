@@ -15,7 +15,7 @@ def get_window():
         raise ValueError("Window not found. Please ensure the window is open and the title is correct.")
     return windows[0]
 
-def screenshot_window(window, num_screenshots=1):
+def screenshot_window(window, num_screenshots=1, save_path=None):
     window.activate()
     window.restore()
 
@@ -28,13 +28,16 @@ def screenshot_window(window, num_screenshots=1):
     )
     
     screenshots = []
-    for _ in range(num_screenshots):
+    for i in range(num_screenshots):
         pyautogui.sleep(0.3)
         screenshot = pyautogui.screenshot(region=region)
         screenshot_np = np.array(screenshot)
         # Changed the color conversion flag to convert from RGB to BGR
         screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
         screenshots.append(screenshot_np)
+
+        if save_path:
+            cv2.imwrite(f"{save_path}/screenshot_{i + 1}.png", screenshot_np)
 
     window.minimize()
 

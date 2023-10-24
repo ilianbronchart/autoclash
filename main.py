@@ -9,12 +9,11 @@ if __name__ == '__main__':
     screen = detect_screen(window, OCR_SAMPLES)
     print(screen)
 
-    screenshot = screenshot_window(window)[0]
+    screenshot = screenshot_window(window, 1, 'assets')[0]
     template = cv2.imread('assets/templates/attack_button.png')
     attack_button = detect_button(screenshot, template)
     print(attack_button)
 
     x, y, w, h = attack_button
-    # Draw a rectangle around the detected button
     cv2.rectangle(screenshot, (x, y), (x+w, y+h), (0, 255, 0), 2)
     show_image(screenshot)

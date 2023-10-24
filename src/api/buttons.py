@@ -13,7 +13,7 @@ def detect_button(screenshot, template):
     result = cv2.matchTemplate(screenshot_gray, template_gray, cv2.TM_CCOEFF_NORMED)
     
     # Set a threshold value to consider a match
-    threshold = 0.1
+    threshold = 0.6
     print(result)
     loc = np.where(result >= threshold)
     
