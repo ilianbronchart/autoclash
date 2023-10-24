@@ -11,7 +11,7 @@ def rescale_template(template, target_screenshot_size):
     
     # Choose the larger scaling factor to ensure the template fits within the screenshot 
     # while preserving its aspect ratio
-    scale = max(scale_width, scale_height)
+    scale = min(scale_width, scale_height)
     
     # Compute the new dimensions for the template
     new_width = int(template.shape[1] * scale)
