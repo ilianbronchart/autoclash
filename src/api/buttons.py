@@ -19,6 +19,8 @@ def rescale_template(template, target_screenshot_size):
     
     # Rescale the template
     rescaled_template = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+
+    cv2.imwrite(f"assets/rescaled_template.png", rescaled_template)
     
     return rescaled_template
 
