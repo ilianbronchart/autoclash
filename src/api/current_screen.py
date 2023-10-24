@@ -3,7 +3,7 @@ import pyautogui
 import cv2
 import numpy as np
 from src.utils import show_image
-from src.config import OCR_WHITE_THRESHOLD, SCREEN_TEXT, WINDOW_TITLE
+from src.config import OCR_WHITE_THRESHOLD, SCREEN_TEXT, WINDOW_TITLE, SCREENSHOT_OUTER_BORDER, SCREENSHOT_HEADER_SIZE
 import pyautogui
 import pytesseract
 import re
@@ -20,7 +20,12 @@ def screenshot_window(window, num_screenshots=1):
     window.restore()
 
     rect = window._rect  # using _rect to get all bounds in one call
-    region = (rect.x, rect.y, rect.w, rect.h)
+    region = (
+        rect.x + SCREENSHOT_OUTER_BORDER, 
+        rect.y + SCREENSHOT_HEADER_SIZE,
+        rect.w - 2 * SCREENSHOT_OUTER_BORDER, 
+        rect.h - SCREENSHOT_OUTER_BORDER - SCREENSHOT_HEADER_SIZE
+    )
     
     screenshots = []
     for _ in range(num_screenshots):
