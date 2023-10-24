@@ -25,13 +25,24 @@ SCREENS = {
         'words': [
             'attack', 'shop'
         ],
-        'buttons': ['attack_button']
+        'buttons': ['attack_button', 'main_train_button']
     },
     'attack_screen': {
         'words': [
             'tap', 'or', 'press', 'and', 'hold', 'to', 'deploy', 'troops', 'end', 'battle', 'available', 'loot'
         ],
         'buttons': []
-    }
+    },
+    'collect_loot': {
+        'words': [],
+        'buttons': ['elixir_popup', 'dark_elixir_popup', 'gold_popup']
+    },
+    'training_screen': {
+        'words': [
+            'train', 'troops', 'army', 'brew', 'spells', 'quick', 'train'
+        ],
+        'buttons': ['train_button', 'quick_train_button']
+    },
+    
 }
 
