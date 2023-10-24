@@ -11,7 +11,7 @@ if __name__ == '__main__':
     screen = detect_screen(window, OCR_SAMPLES)
     print(screen)
 
-    screenshot = screenshot_window(window, 1, 'assets')[0]
+    screenshot = screenshot_window(window, 1)[0]
     templates = get_button_templates(screen)
     buttons = detect_buttons(window, screenshot, templates)
     # show_button_rects(screenshot, buttons)
