@@ -15,6 +15,7 @@ def get_window():
         raise ValueError("Window not found. Please ensure the window is open and the title is correct.")
     return windows[0]
 
+
 def screenshot_window(window, num_screenshots=1, save_path=None):
     window.activate()
     window.restore()
@@ -26,7 +27,7 @@ def screenshot_window(window, num_screenshots=1, save_path=None):
         rect.w - 2 * SCREENSHOT_OUTER_BORDER, 
         rect.h - SCREENSHOT_OUTER_BORDER - SCREENSHOT_HEADER_SIZE
     )
-    
+
     screenshots = []
     for i in range(num_screenshots):
         pyautogui.sleep(0.3)
@@ -70,6 +71,7 @@ def detect_text_no_pre(screenshot_np):
 
     return pytesseract.image_to_string(screenshot_np)
 
+
 def filter_small_components(binary_img, min_area=50):
     """
     Remove small connected components from a binary image based on a given area threshold.
@@ -88,6 +90,7 @@ def filter_small_components(binary_img, min_area=50):
             
     return output
 
+
 def detect_text_thresholded(screenshot_np, show_cleaned=False):
     # Convert image to grayscale
     gray = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2GRAY)
@@ -103,10 +106,8 @@ def detect_text_thresholded(screenshot_np, show_cleaned=False):
     
     return pytesseract.image_to_string(filtered)
 
-def detect_screen(window, OCR_SAMPLES):
-    screenshots = screenshot_window(window, OCR_SAMPLES)
-    words = compile_text_samples(screenshots)
 
+def detect_screen_from_words(words):
     # Filter out words that are not in any include list
     valid_words = set(word for screen_data in SCREENS.values() for word in screen_data['words'])
     filtered_words = set(words) & valid_words
@@ -129,3 +130,9 @@ def detect_screen(window, OCR_SAMPLES):
 
     # Return the screen with the highest match ratio
     return likely_screen
+
+
+def detect_screen(window, OCR_SAMPLES):
+    screenshots = screenshot_window(window, OCR_SAMPLES)
+    words = compile_text_samples(screenshots) 
+    return detect_screen_from_words(words)

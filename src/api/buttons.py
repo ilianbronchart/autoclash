@@ -1,9 +1,14 @@
 import cv2
 import numpy as np
 import os
-from src.config import SCREENS, TEMPLATES_DIR
+from src.config import SCREENS, TEMPLATES_DIR, REFERENCE_SCREEN_SIZE
 
 def detect_button(screenshot, template):
+    assert (
+        screenshot.shape[0] == REFERENCE_SCREEN_SIZE[1] and 
+        screenshot.shape[1] == REFERENCE_SCREEN_SIZE[0]
+    ), f'screenshot should have shape {REFERENCE_SCREEN_SIZE}'
+
     # Convert images to grayscale
     screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
     template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
@@ -16,7 +21,6 @@ def detect_button(screenshot, template):
     
     # Set a threshold value to consider a match
     threshold = 0.8
-    print(result)
     loc = np.where(result >= threshold)
     
     # If no match is found, return None
@@ -28,6 +32,11 @@ def detect_button(screenshot, template):
         return (pt[0], pt[1], w, h)
     
 def detect_buttons(screenshot, templates):
+    assert (
+        screenshot.shape[0] == REFERENCE_SCREEN_SIZE[1] and 
+        screenshot.shape[1] == REFERENCE_SCREEN_SIZE[0]
+    ), f'screenshot should have shape {REFERENCE_SCREEN_SIZE}'
+    
     return {template: detect_button(screenshot, templates[template]) for template in templates}
 
 def get_button_templates(screen):

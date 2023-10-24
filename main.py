@@ -1,6 +1,6 @@
-from src.api.current_screen import screenshot_window, detect_screen, get_window
+from src.api.current_screen import screenshot_window, detect_screen, get_window, compile_text_samples
 from src.api.buttons import detect_buttons, get_button_templates
-from src.config import OCR_SAMPLES
+from src.config import OCR_SAMPLES, REFERENCE_SCREEN_SIZE
 from src.utils import show_image
 import cv2
 
@@ -10,6 +10,8 @@ if __name__ == '__main__':
     print(screen)
 
     screenshot = screenshot_window(window, 1, 'assets')[0]
+    screenshot = cv2.resize(screenshot,  REFERENCE_SCREEN_SIZE)
+
     templates = get_button_templates(screen)
     buttons = detect_buttons(screenshot, templates)
 
