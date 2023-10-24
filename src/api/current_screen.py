@@ -100,7 +100,10 @@ def detect_text_thresholded(screenshot_np, show_cleaned=False):
     
     return pytesseract.image_to_string(filtered)
 
-def detect_screen(words):
+def detect_screen(window, OCR_SAMPLES):
+    screenshots = screenshot_window(window, OCR_SAMPLES)
+    words = compile_text_samples(screenshots)
+
     # Filter out words that are not in any include list
     valid_words = set(word for screen_data in SCREEN_TEXT.values() for word in screen_data)
     filtered_words = set(words) & valid_words
