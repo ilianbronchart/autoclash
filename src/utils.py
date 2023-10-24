@@ -9,9 +9,9 @@ def show_image(img):
 def show_button_rects(screenshot, buttons):
     for button in buttons.keys():
         x, y, w, h = buttons[button].rect
-        cv2.rectangle(screenshot, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(screenshot, (x, y), (x + w, y + h), (255, 0, 255), 2)
 
-        show_image(screenshot)
+    show_image(screenshot)
 
 
 def show_window(window):

@@ -8,6 +8,8 @@ TEMPLATES_DIR = 'assets/templates'
 OCR_SAMPLES = 5
 OCR_WHITE_THRESHOLD = 220
 
+TEMPLATE_TO_COLOR = ['elixir_popup', 'dark_elixir_popup', 'gold_popup', 'quick_train_button']
+
 SCREENS = {
     'disconnected_screen': {
         'words': [
@@ -25,24 +27,19 @@ SCREENS = {
         'words': [
             'attack', 'shop'
         ],
-        'buttons': ['attack_button', 'main_train_button']
+        'buttons': ['attack_button', 'main_train_button', 'elixir_popup', 'gold_popup', 'dark_elixir_popup']
     },
     'attack_screen': {
         'words': [
             'tap', 'or', 'press', 'and', 'hold', 'to', 'deploy', 'troops', 'end', 'battle', 'available', 'loot'
         ],
-        'buttons': []
-    },
-    'collect_loot': {
-        'words': [],
-        'buttons': ['elixir_popup', 'dark_elixir_popup', 'gold_popup']
+        'buttons': ['next_attack_button', 'end_battle_button']
     },
     'training_screen': {
         'words': [
             'train', 'troops', 'army', 'brew', 'spells', 'quick', 'train'
         ],
-        'buttons': ['train_button', 'quick_train_button']
+        'buttons': ['quick_train_button', 'close_button']
     },
-    
 }
 

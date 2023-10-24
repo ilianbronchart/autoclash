@@ -2,8 +2,9 @@ import cv2
 import numpy as np
 import os
 import pyautogui as pag
-from src.config import SCREENS, TEMPLATES_DIR, REFERENCE_SCREEN_SIZE
+from src.config import SCREENS, TEMPLATES_DIR, REFERENCE_SCREEN_SIZE, TEMPLATE_TO_COLOR
 from src.api.models import Button
+from src.utils import show_image
 
 
 def rescale_template(template, target_screenshot_size):
@@ -21,12 +22,10 @@ def rescale_template(template, target_screenshot_size):
     
     # Rescale the template
     rescaled_template = cv2.resize(template, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
-
-    cv2.imwrite(f"assets/rescaled_template.png", rescaled_template)
     
     return rescaled_template
 
-def detect_button(screenshot, template):
+def detect_button_gray(screenshot, template):
     # Convert images to grayscale
     screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
     template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
@@ -42,7 +41,31 @@ def detect_button(screenshot, template):
     result = cv2.matchTemplate(screenshot_gray, rescaled_template, cv2.TM_CCOEFF_NORMED)
     
     # Set a threshold value to consider a match
-    threshold = 0.8
+    threshold = 0.7
+    loc = np.where(result >= threshold)
+    
+    # If no match is found, return None
+    if len(loc[0]) == 0:
+        return None
+
+    # Get the location of the first match
+    for pt in zip(*loc[::-1]):
+        return (pt[0], pt[1], w, h)
+
+
+def detect_button_color(screenshot, template): 
+    # Rescale the template based on the screenshot size
+    target_screenshot_size = (screenshot.shape[1], screenshot.shape[0])  # Shape returns (height, width), so we reverse it
+    rescaled_template = rescale_template(template, target_screenshot_size)
+    
+    # Get dimensions of the rescaled template
+    h, w = rescaled_template.shape[:2]
+    
+    # Perform template matching
+    result = cv2.matchTemplate(screenshot, rescaled_template, cv2.TM_CCOEFF_NORMED)
+    
+    # Set a threshold value to consider a match
+    threshold = 0.7
     loc = np.where(result >= threshold)
     
     # If no match is found, return None
@@ -58,7 +81,12 @@ def detect_buttons(window, screenshot, templates):
     buttons = {}
 
     for template in templates:
-        rect = detect_button(screenshot, templates[template])
+        if template in TEMPLATE_TO_COLOR:
+            rect = detect_button_color(screenshot, templates[template])
+        else:
+            rect = detect_button_gray(screenshot, templates[template])
+
+        print(template, rect)
         if (rect):
             buttons[template] = Button(window, rect)
 
