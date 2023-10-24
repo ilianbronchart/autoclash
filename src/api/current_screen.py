@@ -17,7 +17,10 @@ def get_window():
 
 
 def screenshot_window(window, num_screenshots=1, save_path=None):
-    window.activate()
+    try:
+        window.activate()
+    except:
+        pass
     window.restore()
 
     rect = window._rect  # using _rect to get all bounds in one call

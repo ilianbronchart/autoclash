@@ -3,21 +3,31 @@ import numpy as np
 import os
 from src.config import SCREENS, TEMPLATES_DIR, REFERENCE_SCREEN_SIZE
 
-def detect_button(screenshot, template):
-    assert (
-        screenshot.shape[0] == REFERENCE_SCREEN_SIZE[1] and 
-        screenshot.shape[1] == REFERENCE_SCREEN_SIZE[0]
-    ), f'screenshot should have shape {REFERENCE_SCREEN_SIZE}'
 
+def rescale_template(template, target_screenshot_size):
+    # Calculate scaling factors
+    scale_width = target_screenshot_size[0] / REFERENCE_SCREEN_SIZE[0]
+    scale_height = target_screenshot_size[1] / REFERENCE_SCREEN_SIZE[1]
+    
+    # Rescale the template
+    rescaled_template = cv2.resize(template, None, fx=scale_width, fy=scale_height, interpolation=cv2.INTER_LINEAR)
+    
+    return rescaled_template
+
+def detect_button(screenshot, template):
     # Convert images to grayscale
     screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
     template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
 
-    # Get dimensions of the template
-    h, w = template_gray.shape
+    # Rescale the template based on the screenshot size
+    target_screenshot_size = (screenshot.shape[1], screenshot.shape[0])  # Shape returns (height, width), so we reverse it
+    rescaled_template = rescale_template(template_gray, target_screenshot_size)
+    
+    # Get dimensions of the rescaled template
+    h, w = rescaled_template.shape
     
     # Perform template matching
-    result = cv2.matchTemplate(screenshot_gray, template_gray, cv2.TM_CCOEFF_NORMED)
+    result = cv2.matchTemplate(screenshot_gray, rescaled_template, cv2.TM_CCOEFF_NORMED)
     
     # Set a threshold value to consider a match
     threshold = 0.8
@@ -30,13 +40,9 @@ def detect_button(screenshot, template):
     # Get the location of the first match
     for pt in zip(*loc[::-1]):
         return (pt[0], pt[1], w, h)
+
     
 def detect_buttons(screenshot, templates):
-    assert (
-        screenshot.shape[0] == REFERENCE_SCREEN_SIZE[1] and 
-        screenshot.shape[1] == REFERENCE_SCREEN_SIZE[0]
-    ), f'screenshot should have shape {REFERENCE_SCREEN_SIZE}'
-    
     return {template: detect_button(screenshot, templates[template]) for template in templates}
 
 def get_button_templates(screen):

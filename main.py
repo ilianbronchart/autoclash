@@ -10,7 +10,6 @@ if __name__ == '__main__':
     print(screen)
 
     screenshot = screenshot_window(window, 1, 'assets')[0]
-    screenshot = cv2.resize(screenshot,  REFERENCE_SCREEN_SIZE)
 
     templates = get_button_templates(screen)
     buttons = detect_buttons(screenshot, templates)
