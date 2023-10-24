@@ -3,43 +3,37 @@ import pyautogui
 import cv2
 import numpy as np
 from src.utils import show_image
-from src.config import WINDOW_OFFSET, WINDOW_OFFSET_TOP, OCR_SAMPLES, OCR_WHITE_THRESHOLD, SCREEN_TEXT
+from src.config import OCR_WHITE_THRESHOLD, SCREEN_TEXT, WINDOW_TITLE
 import pyautogui
 import pytesseract
 import re
 
 
-def find_and_screenshot_window(window_title, num_screenshots=1):
-    try:
-        window = gw.getWindowsWithTitle(window_title)[0]      
-        pyautogui.sleep(1)
-        window.restore()
-        pyautogui.sleep(1)
+def get_window():
+    windows = gw.getWindowsWithTitle(WINDOW_TITLE)
+    if not windows:
+        raise ValueError("Window not found. Please ensure the window is open and the title is correct.")
+    return windows[0]
 
-        region = (
-          window.left + WINDOW_OFFSET,
-          window.top + WINDOW_OFFSET_TOP, 
-          window.width - 2 * WINDOW_OFFSET, 
-          window.height - WINDOW_OFFSET_TOP - WINDOW_OFFSET
-        )
+def screenshot_window(window, num_screenshots=1):
+    window.activate()
+    window.restore()
 
-        screenshots = []
-        for _ in range(num_screenshots):
-            pyautogui.sleep(0.3)
-            screenshot = pyautogui.screenshot(region=region)
-            screenshot_np = np.array(screenshot)
-            screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2RGB)
-            screenshots.append(screenshot_np)
+    rect = window._rect  # using _rect to get all bounds in one call
+    region = (rect.x, rect.y, rect.w, rect.h)
+    
+    screenshots = []
+    for _ in range(num_screenshots):
+        pyautogui.sleep(0.3)
+        screenshot = pyautogui.screenshot(region=region)
+        screenshot_np = np.array(screenshot)
+        # Changed the color conversion flag to convert from RGB to BGR
+        screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
+        screenshots.append(screenshot_np)
 
-        pyautogui.sleep(3)
-        window.minimize()
+    window.minimize()
 
-        return screenshots
-
-    except IndexError:
-        print("Window not found. Please ensure the window is open and the title is correct.")
-    except Exception as e:
-        print("An error occurred:", str(e))
+    return screenshots
 
 
 def compile_text_samples(screenshots):
@@ -103,15 +97,15 @@ def detect_text_thresholded(screenshot_np, show_cleaned=False):
 
 def detect_screen(words):
     # Filter out words that are not in any include list
-    valid_words = set(word for screen_data in SCREEN_TEXT.values() for word in screen_data['include'])
+    valid_words = set(word for screen_data in SCREEN_TEXT.values() for word in screen_data)
     filtered_words = set(words) & valid_words
     
     max_matches = 0
     likely_screen = None
     
     for screen, criteria in SCREEN_TEXT.items():
-        matching_words = set(criteria['include']) & filtered_words
-        match_ratio = len(matching_words) / len(criteria['include'])
+        matching_words = set(criteria) & filtered_words
+        match_ratio = len(matching_words) / len(criteria)
         
         # Update likely screen if a higher match ratio is found
         if match_ratio > max_matches:

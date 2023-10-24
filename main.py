@@ -1,13 +1,19 @@
-from src.api.current_screen import find_and_screenshot_window, compile_text_samples, detect_text_thresholded, detect_screen
-from src.config import WINDOW_TITLE, OCR_SAMPLES, SCREEN_TEXT
+from src.api.current_screen import screenshot_window, compile_text_samples, detect_text_thresholded, detect_screen, get_window
+from src.config import OCR_SAMPLES
+from src.utils import show_image
 
 if __name__ == '__main__':
-    screenshots = find_and_screenshot_window(WINDOW_TITLE, OCR_SAMPLES)
+    window = get_window()
+    screenshots = screenshot_window(window, OCR_SAMPLES)
 
-    words = compile_text_samples(screenshots)
-    print(words)
+    show_image(screenshots[-1])
+
+    # detect_text_thresholded(screenshots[0], True)
+
+    # words = compile_text_samples(screenshots)
+    # print(words)
     
-    print()
+    # print()
 
-    screen = detect_screen(words)
-    print(screen)
+    # screen = detect_screen(words)
+    # print(screen)
