@@ -42,8 +42,6 @@ class Screen:
             for button in buttons:
                 button.detect(screenshot)
 
-        self.show_buttons(screenshot)
-
     
     def show_buttons(self, screenshot):
         for name, button  in vars(self.buttons).items():

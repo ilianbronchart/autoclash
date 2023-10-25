@@ -7,12 +7,11 @@ if __name__ == '__main__':
 
     window.show()
 
-    window.screenshot('assets')
+    # window.screenshot('assets')
 
     current_screen = window.detect_screen()
 
-    if (type(current_screen) == TrainingScreen):
-        current_screen.detect_buttons()
-        current_screen.show_buttons(window.screenshot())
+    current_screen.detect_buttons()
+    current_screen.show_buttons(window.screenshot())
 
     window.hide()

@@ -39,7 +39,7 @@ class Button:
         h, w = rescaled_template.shape
         
         # Perform template matching
-        result = cv2.matchTemplate(screenshot_gray, rescaled_template, cv2.TM_SQDIFF_NORMED)
+        result = cv2.matchTemplate(screenshot_gray, rescaled_template, cv2.TM_CCOEFF_NORMED)
         
         # Set a threshold value to consider a match
         threshold = 0.7
