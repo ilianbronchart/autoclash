@@ -1,22 +1,43 @@
-from src.api.current_screen import screenshot_window, detect_screen, get_window, compile_text_samples
-from src.api.buttons import detect_buttons, get_button_templates
-from src.config import OCR_SAMPLES, REFERENCE_SCREEN_SIZE
-from src.utils import show_image, show_button_rects, show_window
+from src.api.window import Window
+from src.api.screen import Screen
+
+
+window = Window([
+    Screen(
+        name='disconnected_screen', 
+        button_names=[], 
+        words=['anyone', 'there', 'you', 'have', 'been', 'disconnected', 'due', 'to', 'inactivity']
+    ),
+    Screen(
+        name='multiplayer_screen', 
+        button_names=['close_button', 'find_match_button'], 
+        words=['unranked', 'practice', 'single', 'player']
+    ),
+    Screen(
+        name='main_screen', 
+        button_names=['attack_button', 'main_train_button', 'elixir_popup', 'gold_popup', 'dark_elixir_popup'], 
+        words=['attack', 'shop']
+    ),
+    Screen(
+        name='attack_screen', 
+        button_names=['next_attack_button', 'end_battle_button'], 
+        words=['tap', 'or', 'press', 'and', 'hold', 'to', 'deploy', 'troops', 'end', 'battle', 'available', 'loot']
+    ),
+    Screen(
+        name='training_screen', 
+        button_names=['quick_train_button', 'close_button'], 
+        words=['train', 'troops', 'army', 'brew', 'spells', 'quick', 'train']
+    ),
+])
 
 
 if __name__ == '__main__':
-    window = get_window()
-    show_window(window)
+    window.show()
 
-    # screen = detect_screen(window, OCR_SAMPLES)
-    # print(screen)
+    screen = window.detect_screen()
+    
+    screenshot = window.screenshot(1)[0]
+    screen.detect_buttons(screenshot)
+    screen.show_buttons(screenshot)
 
-    screen = 'main_screen'
-
-    screenshot = screenshot_window(window, 1, 'assets')[0]
-    templates = get_button_templates(screen)
-    buttons = detect_buttons(window, screenshot, templates)
-
-    window.minimize()
-
-    show_button_rects(screenshot, buttons)
+    window.hide()
