@@ -41,6 +41,15 @@ class Window:
         }
     
 
+    @property
+    def center(self):
+        rect = self.position
+        return {
+            'x': rect['x'] + rect['width'] // 2,
+            'y': rect['y'] + rect['height'] // 2
+        }
+
+
     def show(self):
         try:
             self.window.activate()
