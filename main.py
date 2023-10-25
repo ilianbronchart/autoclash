@@ -1,33 +1,18 @@
 from src.api.window import Window
-from src.api.screen import MainScreen, AttackScreen
-
+from src.api.screen import MainScreen, AttackScreen, TrainingScreen
 
 
 if __name__ == '__main__':
-    # Create an instance of Window with the AttackScreen
     window = Window()
 
-    # Show the game window
     window.show()
 
-    # Navigate to the attack screen in the game manually
+    window.screenshot('assets')
 
-    # Detect the current screen
     current_screen = window.detect_screen()
-    if current_screen.name != 'attack_screen':
-        print("Please navigate to the attack screen and try again.")
-    else:
-        print("Attack screen detected!")
 
-        # Take a screenshot
-        screenshot = window.screenshot()
-
-        # Detect buttons on the screen
+    if (type(current_screen) == TrainingScreen):
         current_screen.detect_buttons()
+        current_screen.show_buttons(window.screenshot())
 
-        # Perform actions
-        current_screen.next_attack(times=3)
-        current_screen.end_battle()
-
-        # Hide the game window (optional)
-        window.hide()
+    window.hide()
