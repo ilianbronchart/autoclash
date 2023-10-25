@@ -4,18 +4,24 @@ import cv2
 import numpy as np
 import re
 from typing import List
-from src.api.screen import Screen
+from src.api.screen import Screen, MainScreen, AttackScreen, TrainingScreen, DisconnectedScreen, MultiplayerScreen
 from src.utils import detect_text_thresholded, detect_text_no_pre
 from src.config import OCR_SAMPLES
 
 class Window:
+    screens: List[Screen] = [
+        DisconnectedScreen(),
+        MultiplayerScreen(),
+        MainScreen(),
+        AttackScreen(),
+        TrainingScreen()
+    ]
     WINDOW_TITLE: str = 'Clash of Clans'
     SCREENSHOT_OUTER_BORDER: int = 10
     SCREENSHOT_HEADER_SIZE: int = 32
 
-    def __init__(self, screens: List[Screen]):
-        self.screens = screens
 
+    def __init__(self):
         windows = gw.getWindowsWithTitle(self.WINDOW_TITLE)
         if not windows:
             raise ValueError("Window not found. Please ensure the window is open and the title is correct.")
