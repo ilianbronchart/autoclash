@@ -7,7 +7,7 @@ from src.api.buttons import detect_button
 # Directory containing the test screenshots
 SCREENSHOTS_DIR = "./test/screenshots" 
 
-@pytest.mark.parametrize("./assets/templates/yannick.png", os.listdir(SCREENSHOTS_DIR))
+@pytest.mark.parametrize(os.listdir(SCREENSHOTS_DIR))
 def test_detect_screen(screenshot_name):
     # Load the screenshot
     screenshot_path = os.path.join(SCREENSHOTS_DIR, screenshot_name)
