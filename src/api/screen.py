@@ -5,6 +5,7 @@ from typing import List
 from src.api.button import Button
 from src.utils import show_image
 from typing import TYPE_CHECKING
+from time import sleep
 
 
 if TYPE_CHECKING:
@@ -82,9 +83,11 @@ class AttackScreen(Screen):
         print(f"window: {self}, times: {times}")
         for _ in range(times):
             self.buttons.NEXT_ATTACK_BUTTON.value.click(self.window)
+            sleep(5)
+
             
     def end_battle(self):
-        self.buttons.END_BATTLE_BUTTON.value.click(self.window)
+        self.buttons.END_BATTLE_BUTTON.value.click()
 
 
 
