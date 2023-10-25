@@ -1,10 +1,12 @@
 import cv2
 import re
+import pyautogui as pag
 from enum import Enum
 from typing import List
 from src.api.button import Button
 from src.utils import show_image
 from typing import TYPE_CHECKING
+
 
 
 if TYPE_CHECKING:
@@ -29,15 +31,16 @@ class Screen:
         return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
-    def detect_buttons(self, screenshot):
+    def detect_buttons(self):
+        screenshot = self.window.screenshot()
         screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
 
-        for button in self.Buttons:
+        for button in self.buttons:
             button.value.detect(screenshot_gray)
 
 
     def show_buttons(self, screenshot):
-        for button in self.buttons.values():
+        for button in self.buttons:
             x, y, w, h = button.rect
             cv2.rectangle(screenshot, (x, y), (x + w, y + h), (255, 0, 255), 2)
 
@@ -53,19 +56,35 @@ class MainScreen(Screen):
         ELIXIR_POPUP = Button("elixir_popup")
         GOLD_POPUP = Button("gold_popup")
 
-    
+
     def __init__(self, window: 'Window'):
         super().__init__(window)
 
-    
-    def collect_resources(self):
+
+    def zoom_out(self):
         pass
 
     
-    def has_resources(self):
-        screenshot = self.window.screenshot()
+    def collect_resources(self):
+        self.zoom_out()
+        self.detect_buttons()
 
-        self.detect_buttons
+        if self.buttons.GOLD_POPUP.value.is_visible():
+            self.buttons.GOLD_POPUP.value.click(self.window)
+
+        pag.sleep(0.5)
+
+        if self.buttons.ELIXIR_POPUP.value.is_visible():
+            self.buttons.ELIXIR_POPUP.value.click(self.window)
+
+        pag.sleep(0.5)
+        self.detect_buttons()
+
+        # Collect other elixir type (since they have the same-ish button)
+        if self.buttons.ELIXIR_POPUP.value.is_visible():
+            self.buttons.ELIXIR_POPUP.value.click(self.window)
+
+
 
 
 class AttackScreen(Screen):

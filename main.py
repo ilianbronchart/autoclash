@@ -1,4 +1,5 @@
 from src.api.window import Window
+from src.api.screen import MainScreen
 
 
 if __name__ == '__main__':
@@ -7,6 +8,8 @@ if __name__ == '__main__':
     window.show()
 
     screen = window.detect_screen()
-    print(screen.name) 
+
+    if type(screen) == MainScreen:
+        screen.collect_resources()
 
     window.hide()

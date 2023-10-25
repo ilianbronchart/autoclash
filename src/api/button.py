@@ -8,16 +8,21 @@ from src.config import TEMPLATES_DIR
 from src.utils import rescale_template
 
 
+INVISIBLE = (0, 0, 0, 0)
+
+
 class Button:
-    def __init__(self, name: str, rect: Tuple[int, int, int, int] = (0, 0, 0, 0)):
+    def __init__(self, name: str, rect: Tuple[int, int, int, int] = INVISIBLE):
         self.name = name
         self.rect = rect
         self.template = cv2.imread(os.path.join(TEMPLATES_DIR, f"{self.name}.png"))
 
 
     def click(self, window):
-        center_x = window.left + self.rect[0] + self.rect[2] // 2
-        center_y = window.top + self.rect[1] + self.rect[3] // 2
+        assert self.is_visible(), f"Button {self.name} is not visible"
+
+        center_x = window.position['x'] + self.rect[0] + self.rect[2] // 2
+        center_y = window.position['y'] + self.rect[1] + self.rect[3] // 2
         pag.moveTo(center_x, center_y)
         pag.click()
 
@@ -41,9 +46,12 @@ class Button:
         
         # If no match is found, return None
         if len(loc[0]) == 0:
-            return None
+            return INVISIBLE
 
         # Get the location of the first match
         for pt in zip(*loc[::-1]):
             self.rect = (pt[0], pt[1], w, h)
             return
+        
+    def is_visible(self):
+        return self.rect != INVISIBLE
