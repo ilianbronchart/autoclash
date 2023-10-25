@@ -1,5 +1,5 @@
 from src.api.window import Window
-from src.api.screen import MainScreen
+from src.api.screen import MainScreen, AttackScreen
 
 
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         current_screen.detect_buttons()
 
         # Perform actions
-        # current_screen.next_attack(times=3)
+        current_screen.next_attack(times=3)
         current_screen.end_battle()
 
         # Hide the game window (optional)

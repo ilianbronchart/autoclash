@@ -33,13 +33,13 @@ class Screen:
 
 
     def detect_buttons(self):
-        screenshot = self.window.screenshot()
+        screenshot = self.window.screenshot(save_path='assets')
         screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
 
         for button in self.buttons:
             button.value.detect(screenshot_gray)
 
-        self.show_buttons(screenshot)
+      
 
 
     def show_buttons(self, screenshot):
@@ -65,7 +65,13 @@ class MainScreen(Screen):
 
 
     def zoom_out(self):
-        pass
+        center = self.window.center
+
+        # scroll
+        pag.moveTo(center['x'], center['y'])
+        for _ in range(100):
+            pag.scroll(-100)
+
 
     
     def collect_resources(self):
