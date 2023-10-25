@@ -73,7 +73,7 @@ class Window:
     
 
     def detect_screen(self):
-        screenshots = self.screenshot(OCR_SAMPLES)
+        screenshots = self.screenshots(OCR_SAMPLES)
         words = self.compile_text_samples(screenshots) 
         return self.detect_screen_from_words(words)
     

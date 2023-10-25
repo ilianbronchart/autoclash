@@ -32,8 +32,8 @@ class Screen:
     def detect_buttons(self, screenshot):
         screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
 
-        for button in self.buttons.values():
-            button.detect(screenshot_gray)
+        for button in self.Buttons:
+            button.value.detect(screenshot_gray)
 
 
     def show_buttons(self, screenshot):
@@ -64,6 +64,8 @@ class MainScreen(Screen):
     
     def has_resources(self):
         screenshot = self.window.screenshot()
+
+        self.detect_buttons
 
 
 class AttackScreen(Screen):
