@@ -15,7 +15,7 @@ window = Window([
     ),
     Screen(
         name='main_screen', 
-        button_names=['attack_button', 'main_train_button', 'elixir_popup', 'gold_popup', 'dark_elixir_popup'], 
+        button_names=['attack_button', 'main_train_button', 'elixir_popup', 'gold_popup'], 
         words=['attack', 'shop']
     ),
     Screen(

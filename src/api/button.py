@@ -1,4 +1,3 @@
-from typing import Tuple
 import pyautogui as pag
 import pygetwindow as gw
 import cv2
