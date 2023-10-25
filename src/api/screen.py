@@ -4,6 +4,7 @@ from enum import Enum
 from typing import List
 from src.api.button import Button
 from src.utils import show_image
+from src.api.window import Window
 
 class Screen:
     words: List[str]
@@ -52,6 +53,17 @@ class AttackScreen(Screen):
     class buttons(Enum):
         NEXT_ATTACK_BUTTON = Button("next_attack_button")
         END_BATTLE_BUTTON = Button("end_battle_button")
+
+    def __init__(self, name:str):
+        button_names = [button.value.name for button in self.buttons]
+        super().__init__(name, button_names, self.words)
+
+    def next_attack(self, window: Window, times: int = 1):
+        for _ in range(times):
+            self.buttons.NEXT_ATTACK_BUTTON.value.click(window)
+            
+    def end_battle(self, window: Window):
+        self.buttons.END_BATTLE_BUTTON.value.click(window)
 
 
 
