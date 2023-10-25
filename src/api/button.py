@@ -23,8 +23,6 @@ class Button:
 
 
     def detect(self, screenshot):
-        # Convert images to grayscale
-        screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
         template_gray = cv2.cvtColor(self.template, cv2.COLOR_BGR2GRAY)
 
         # Rescale the template based on the screenshot size
@@ -35,7 +33,7 @@ class Button:
         h, w = rescaled_template.shape
         
         # Perform template matching
-        result = cv2.matchTemplate(screenshot_gray, rescaled_template, cv2.TM_CCOEFF_NORMED)
+        result = cv2.matchTemplate(screenshot, rescaled_template, cv2.TM_CCOEFF_NORMED)
         
         # Set a threshold value to consider a match
         threshold = 0.7

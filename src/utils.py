@@ -50,7 +50,8 @@ def filter_small_components(binary_img, min_area=50):
 
 
 def detect_text_no_pre(screenshot):
-    return pytesseract.image_to_string(screenshot)
+    gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+    return pytesseract.image_to_string(gray)
 
 
 def detect_text_thresholded(screenshot, show_cleaned=False):

@@ -1,25 +1,28 @@
-from enum import Enum
 import cv2
+import re
+from enum import Enum
 from typing import List
 from src.api.button import Button
 from src.utils import show_image
 
 class Screen:
+    words: List[str]
+
     class buttons(Enum):
         pass
 
-    def __init__(self, name: str, button_names: List[str], words: List[str]):
-        self.name = name
-        self.words = words
 
-        self.buttons = {}
-        for name in button_names:
-            self.buttons[name] = Button(name)
+    @property
+    def name(self):
+        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', self.__class__.__name__)
+        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
     def detect_buttons(self, screenshot):
+        screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+
         for button in self.buttons.values():
-            button.detect(screenshot)
+            button.detect(screenshot_gray)
 
 
     def show_buttons(self, screenshot):
@@ -31,33 +34,45 @@ class Screen:
 
     
 class MainScreen(Screen):
+    words: List[str] = ['attack', 'shop']
+
     class buttons(Enum):
         ATTACK_BUTTON = Button("attack_button")
         TRAIN_BUTTON = Button("train_button")
         ELIXIR_POPUP = Button("elixir_popup")
         GOLD_POPUP = Button("gold_popup")
 
-    def __init__(self, name: str, words: List[str]):
-        super().__init__(name, words)
-
     def collect_resources(self, screenshot):
         pass
 
 
 class AttackScreen(Screen):
-    class Buttons(Enum):
+    words: List[str] = ['tap', 'or', 'press', 'and', 'hold', 'to', 'deploy', 'troops', 'end', 'battle', 'available', 'loot']
+
+    class buttons(Enum):
         NEXT_ATTACK_BUTTON = Button("next_attack_button")
         END_BATTLE_BUTTON = Button("end_battle_button")
 
-    def __init__(self, name: str, words: List[str]):
-        super().__init__(name, words)
-        self.buttons = {button.name: button.value for button in self.Buttons}
+
 
 class TrainingScreen(Screen):
-    class Buttons(Enum):
+    words: List[str] = ['train', 'troops', 'army', 'brew', 'spells', 'quick', 'train']
+
+    class buttons(Enum):
         QUICK_TRAIN_BUTTON = Button("quick_train_button")
         CLOSE_BUTTON = Button("close_button")
 
-    def __init__(self, name: str, words: List[str]):
-        super().__init__(name, words)
-        self.buttons = {button.name: button.value for button in self.Buttons}
+
+
+class DisconnectedScreen(Screen):
+    words: List[str] = ['anyone', 'there', 'you', 'have', 'been', 'disconnected', 'due', 'to', 'inactivity']
+
+
+
+class MultiplayerScreen(Screen):
+    words: List[str] = ['unranked', 'practice', 'single', 'player']
+
+    class Buttons(Enum):
+        CLOSE_BUTTON = Button("close_button")
+        FIND_MATCH_BUTTON = Button("find_match_button")
+
