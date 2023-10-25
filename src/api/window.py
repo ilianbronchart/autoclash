@@ -29,8 +29,18 @@ class Window:
             DisconnectedScreen(self),
             MultiplayerScreen(self)
         ]
+
+
+    @property
+    def position(self):
+        return {
+            'x': self.window.left + self.SCREENSHOT_OUTER_BORDER,
+            'y': self.window.top + self.SCREENSHOT_HEADER_SIZE,
+            'width': self.window.width - 2 * self.SCREENSHOT_OUTER_BORDER,
+            'height': self.window.height - self.SCREENSHOT_OUTER_BORDER - self.SCREENSHOT_HEADER_SIZE
+        }
     
-    
+
     def show(self):
         try:
             self.window.activate()
@@ -48,12 +58,12 @@ class Window:
 
 
     def screenshots(self, num_screenshots=1, save_path=None):
-        rect = self.window._rect  # using _rect to get all bounds in one call
+        rect = self.position
         region = (
-            rect.x + self.SCREENSHOT_OUTER_BORDER, 
-            rect.y + self.SCREENSHOT_HEADER_SIZE,
-            rect.w - 2 * self.SCREENSHOT_OUTER_BORDER, 
-            rect.h - self.SCREENSHOT_OUTER_BORDER - self.SCREENSHOT_HEADER_SIZE
+            rect['x'],
+            rect['y'],
+            rect['width'],
+            rect['height']
         )
         screenshots = []
         
