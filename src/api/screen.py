@@ -31,13 +31,16 @@ class Screen:
         return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
-    def detect_buttons(self):
+    def detect_buttons(self, buttons: List[Button] = None):
         screenshot = self.window.screenshot(save_path='assets')
-        screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
 
-        for name, button  in vars(self.buttons).items():
-            if isinstance(button, Button):
-                button.detect(screenshot_gray)
+        if buttons is None:
+            for name, button in vars(self.buttons).items():
+                if isinstance(button, Button):
+                    button.detect(screenshot)
+        else:
+            for button in buttons:
+                button.detect(screenshot)
 
         self.show_buttons(screenshot)
 
