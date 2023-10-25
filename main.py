@@ -19,13 +19,13 @@ if __name__ == '__main__':
         print("Attack screen detected!")
 
         # Take a screenshot
-        screenshot = window.screenshot(1)[0]
+        screenshot = window.screenshot()
 
         # Detect buttons on the screen
         current_screen.detect_buttons(screenshot)
 
         # Perform actions
-        current_screen.next_attack(window, times=3)
+        current_screen.next_attack(times=3)
         current_screen.end_battle(window)
 
         # Hide the game window (optional)

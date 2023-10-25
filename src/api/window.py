@@ -8,14 +8,9 @@ from src.api.screen import Screen, MainScreen, AttackScreen, TrainingScreen, Dis
 from src.utils import detect_text_thresholded, detect_text_no_pre
 from src.config import OCR_SAMPLES
 
+
 class Window:
-    screens: List[Screen] = [
-        DisconnectedScreen(),
-        MultiplayerScreen(),
-        MainScreen(),
-        AttackScreen(),
-        TrainingScreen()
-    ]
+    screens: List[Screen]
     WINDOW_TITLE: str = 'Clash of Clans'
     SCREENSHOT_OUTER_BORDER: int = 10
     SCREENSHOT_HEADER_SIZE: int = 32
@@ -26,6 +21,14 @@ class Window:
         if not windows:
             raise ValueError("Window not found. Please ensure the window is open and the title is correct.")
         self.window = windows[0]
+
+        self.screens = [
+            MainScreen(self),
+            AttackScreen(self),
+            TrainingScreen(self),
+            DisconnectedScreen(self),
+            MultiplayerScreen(self)
+        ]
     
     
     def show(self):
@@ -40,7 +43,11 @@ class Window:
         self.window.minimize()
 
 
-    def screenshot(self, num_screenshots=1, save_path=None):
+    def screenshot(self, save_path=None):
+        return self.screenshots(1, save_path)[0]
+
+
+    def screenshots(self, num_screenshots=1, save_path=None):
         rect = self.window._rect  # using _rect to get all bounds in one call
         region = (
             rect.x + self.SCREENSHOT_OUTER_BORDER, 
@@ -66,7 +73,7 @@ class Window:
     
 
     def detect_screen(self):
-        screenshots = self.screenshot(OCR_SAMPLES)
+        screenshots = self.screenshots(OCR_SAMPLES)
         words = self.compile_text_samples(screenshots) 
         return self.detect_screen_from_words(words)
     

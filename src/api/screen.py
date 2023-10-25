@@ -4,13 +4,23 @@ from enum import Enum
 from typing import List
 from src.api.button import Button
 from src.utils import show_image
-from src.api.window import Window
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from src.api.window import Window
+
 
 class Screen:
     words: List[str]
+    window: 'Window'
 
     class buttons(Enum):
         pass
+
+
+    def __init__(self, window: 'Window'):
+        self.window = window
 
 
     @property
@@ -22,8 +32,8 @@ class Screen:
     def detect_buttons(self, screenshot):
         screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
 
-        for button in self.buttons.values():
-            button.detect(screenshot_gray)
+        for button in self.buttons:
+            button.value.detect(screenshot_gray)
 
 
     def show_buttons(self, screenshot):
@@ -43,8 +53,19 @@ class MainScreen(Screen):
         ELIXIR_POPUP = Button("elixir_popup")
         GOLD_POPUP = Button("gold_popup")
 
-    def collect_resources(self, screenshot):
+    
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
+
+    
+    def collect_resources(self):
         pass
+
+    
+    def has_resources(self):
+        screenshot = self.window.screenshot()
+
+        self.detect_buttons
 
 
 class AttackScreen(Screen):
@@ -54,16 +75,18 @@ class AttackScreen(Screen):
         NEXT_ATTACK_BUTTON = Button("next_attack_button")
         END_BATTLE_BUTTON = Button("end_battle_button")
 
-    def __init__(self, name:str):
-        button_names = [button.value.name for button in self.buttons]
-        super().__init__(name, button_names, self.words)
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
 
-    def next_attack(self, window: Window, times: int = 1):
+    def next_attack(self, times: int = 1):
+        print(f"window: {self}, times: {times}")
         for _ in range(times):
-            self.buttons.NEXT_ATTACK_BUTTON.value.click(window)
+            self.buttons.NEXT_ATTACK_BUTTON.value.click(self.window)
             
-    def end_battle(self, window: Window):
-        self.buttons.END_BATTLE_BUTTON.value.click(window)
+    def end_battle(self):
+        self.buttons.END_BATTLE_BUTTON.value.click(self.window)
+
+
 
 
 
@@ -75,9 +98,18 @@ class TrainingScreen(Screen):
         CLOSE_BUTTON = Button("close_button")
 
 
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
+
 
 class DisconnectedScreen(Screen):
     words: List[str] = ['anyone', 'there', 'you', 'have', 'been', 'disconnected', 'due', 'to', 'inactivity']
+
+    class buttons(Enum):
+        pass
+
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
 
 
 
@@ -87,4 +119,7 @@ class MultiplayerScreen(Screen):
     class Buttons(Enum):
         CLOSE_BUTTON = Button("close_button")
         FIND_MATCH_BUTTON = Button("find_match_button")
+
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
 

@@ -16,8 +16,8 @@ class Button:
 
 
     def click(self, window):
-        center_x = window.left + self.rect[0] + self.rect[2] // 2
-        center_y = window.top + self.rect[1] + self.rect[3] // 2
+        center_x = window.window.left + self.rect[0] + self.rect[2] // 2
+        center_y = window.window.top + self.rect[1] + self.rect[3] // 2
         pag.moveTo(center_x, center_y)
         pag.click()
 
