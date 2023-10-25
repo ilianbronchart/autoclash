@@ -4,12 +4,23 @@ from enum import Enum
 from typing import List
 from src.api.button import Button
 from src.utils import show_image
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from src.api.window import Window
+
 
 class Screen:
     words: List[str]
+    window: 'Window'
 
     class buttons(Enum):
         pass
+
+
+    def __init__(self, window: 'Window'):
+        self.window = window
 
 
     @property
@@ -42,7 +53,16 @@ class MainScreen(Screen):
         ELIXIR_POPUP = Button("elixir_popup")
         GOLD_POPUP = Button("gold_popup")
 
+    
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
+
+    
     def collect_resources(self, screenshot):
+        pass
+
+    
+    def has_resources(self, screenshot):
         pass
 
 
@@ -52,6 +72,9 @@ class AttackScreen(Screen):
     class buttons(Enum):
         NEXT_ATTACK_BUTTON = Button("next_attack_button")
         END_BATTLE_BUTTON = Button("end_battle_button")
+
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
 
 
 
@@ -63,9 +86,18 @@ class TrainingScreen(Screen):
         CLOSE_BUTTON = Button("close_button")
 
 
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
+
 
 class DisconnectedScreen(Screen):
     words: List[str] = ['anyone', 'there', 'you', 'have', 'been', 'disconnected', 'due', 'to', 'inactivity']
+
+    class buttons(Enum):
+        pass
+
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
 
 
 
@@ -75,4 +107,7 @@ class MultiplayerScreen(Screen):
     class Buttons(Enum):
         CLOSE_BUTTON = Button("close_button")
         FIND_MATCH_BUTTON = Button("find_match_button")
+
+    def __init__(self, window: 'Window'):
+        super().__init__(window)
 

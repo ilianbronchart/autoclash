@@ -8,14 +8,9 @@ from src.api.screen import Screen, MainScreen, AttackScreen, TrainingScreen, Dis
 from src.utils import detect_text_thresholded, detect_text_no_pre
 from src.config import OCR_SAMPLES
 
+
 class Window:
-    screens: List[Screen] = [
-        DisconnectedScreen(),
-        MultiplayerScreen(),
-        MainScreen(),
-        AttackScreen(),
-        TrainingScreen()
-    ]
+    screens: List[Screen]
     WINDOW_TITLE: str = 'Clash of Clans'
     SCREENSHOT_OUTER_BORDER: int = 10
     SCREENSHOT_HEADER_SIZE: int = 32
@@ -26,6 +21,14 @@ class Window:
         if not windows:
             raise ValueError("Window not found. Please ensure the window is open and the title is correct.")
         self.window = windows[0]
+
+        self.screens = [
+            MainScreen(self),
+            AttackScreen(self),
+            TrainingScreen(self),
+            DisconnectedScreen(self),
+            MultiplayerScreen(self)
+        ]
     
     
     def show(self):
