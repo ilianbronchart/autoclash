@@ -2,42 +2,37 @@ from src.api.window import Window
 from src.api.screen import Screen
 
 
+disconnected_screen = Screen(
+    name='disconnected_screen', 
+    words=['anyone', 'there', 'you', 'have', 'been', 'disconnected', 'due', 'to', 'inactivity']
+)
+multiplayer_screen = Screen(
+    name='multiplayer_screen', 
+    words=['unranked', 'practice', 'single', 'player']
+)
+main_screen = MainScreen(
+    name='main_screen', 
+    words=['attack', 'shop']
+)
+attack_screen = AttackScreen(
+    name='attack_screen', 
+    words=['tap', 'or', 'press', 'and', 'hold', 'to', 'deploy', 'troops', 'end', 'battle', 'available', 'loot']
+)
+training_screen = TrainingScreen(
+    name='training_screen', 
+    words=['train', 'troops', 'army', 'brew', 'spells', 'quick', 'train']
+)
+
 window = Window([
-    Screen(
-        name='disconnected_screen', 
-        button_names=[], 
-        words=['anyone', 'there', 'you', 'have', 'been', 'disconnected', 'due', 'to', 'inactivity']
-    ),
-    Screen(
-        name='multiplayer_screen', 
-        button_names=['close_button', 'find_match_button'], 
-        words=['unranked', 'practice', 'single', 'player']
-    ),
-    Screen(
-        name='main_screen', 
-        button_names=['attack_button', 'main_train_button', 'elixir_popup', 'gold_popup', 'dark_elixir_popup'], 
-        words=['attack', 'shop']
-    ),
-    Screen(
-        name='attack_screen', 
-        button_names=['next_attack_button', 'end_battle_button'], 
-        words=['tap', 'or', 'press', 'and', 'hold', 'to', 'deploy', 'troops', 'end', 'battle', 'available', 'loot']
-    ),
-    Screen(
-        name='training_screen', 
-        button_names=['quick_train_button', 'close_button'], 
-        words=['train', 'troops', 'army', 'brew', 'spells', 'quick', 'train']
-    ),
+    disconnected_screen,
+    multiplayer_screen,
+    main_screen,
+    attack_screen,
+    training_screen
 ])
 
+ 
 
-if __name__ == '__main__':
-    window.show()
+screen.buttons['attack_button'].click()
 
-    screen = window.detect_screen()
-    
-    screenshot = window.screenshot(1)[0]
-    screen.detect_buttons(screenshot)
-    screen.show_buttons(screenshot)
-
-    window.hide()
+screen.buttons.attack.click()
