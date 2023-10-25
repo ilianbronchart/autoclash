@@ -43,7 +43,11 @@ class Window:
         self.window.minimize()
 
 
-    def screenshot(self, num_screenshots=1, save_path=None):
+    def screenshot(self, save_path=None):
+        return self.screenshots(1, save_path)[0]
+
+
+    def screenshots(self, num_screenshots=1, save_path=None):
         rect = self.window._rect  # using _rect to get all bounds in one call
         region = (
             rect.x + self.SCREENSHOT_OUTER_BORDER, 

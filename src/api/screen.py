@@ -58,12 +58,12 @@ class MainScreen(Screen):
         super().__init__(window)
 
     
-    def collect_resources(self, screenshot):
+    def collect_resources(self):
         pass
 
     
-    def has_resources(self, screenshot):
-        pass
+    def has_resources(self):
+        screenshot = self.window.screenshot()
 
 
 class AttackScreen(Screen):
