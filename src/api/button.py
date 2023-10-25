@@ -22,6 +22,7 @@ class Button:
         pag.moveTo(center_x, center_y)
         pag.click()
 
+
     def detect(self, screenshot):
         # Convert images to grayscale
         screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
