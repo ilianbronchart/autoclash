@@ -17,4 +17,8 @@ pip3 install -r requirements.txt
 
 [Install Tesseract here](https://github.com/UB-Mannheim/tesseract/wiki)
 
-Fine tuning tesseract ? https://www.youtube.com/watch?v=TpD76k2HYms
+Create a `.env` file in the root directory with the following contents:
+
+```
+TESSDATA_PATH=/path/to/tesseract/tessdata
+```

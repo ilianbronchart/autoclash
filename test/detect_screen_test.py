@@ -2,7 +2,7 @@ import cv2
 import os
 import pytest
 
-from src.api.buttons import detect_button
+from src.api.models.buttons import detect_button
 
 # Directory containing the test screenshots
 SCREENSHOTS_DIR = "./test/screenshots" 

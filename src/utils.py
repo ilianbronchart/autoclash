@@ -1,5 +1,4 @@
 import cv2
-import pytesseract
 import pygetwindow as gw
 import numpy as np
 from src.config import REFERENCE_SCREEN_SIZE, OCR_WHITE_THRESHOLD
@@ -49,22 +48,9 @@ def filter_small_components(binary_img, min_area=50):
     return output
 
 
-def detect_text_no_pre(screenshot):
-    gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-    return pytesseract.image_to_string(gray)
+def draw_boxes(screenshot, boxes):
+    for box in boxes:
+        x, y, w, h = box
+        cv2.rectangle(screenshot, (x, y), (x + w, y + h), (255, 0, 255), 2)
 
-
-def detect_text_thresholded(screenshot, show_cleaned=False):
-    # Convert image to grayscale
-    gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-    
-    # Keep pixels above the threshold (retain different shades of gray)
-    thresholded = cv2.inRange(gray, OCR_WHITE_THRESHOLD, 255)
-
-    # Filter out small components
-    filtered = filter_small_components(thresholded)
-    
-    if show_cleaned:
-        show_image(filtered)
-    
-    return pytesseract.image_to_string(filtered)
+    show_image(screenshot)
