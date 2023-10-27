@@ -1,6 +1,6 @@
 from typing import List
 from src.models.screen import Screen
-from src.models.button import Button
+from src.models.button import TemplateButton, TextButton
 import pyautogui as pag
 from src.screens.multiplayer_screen import MultiplayerScreen
 
@@ -9,10 +9,11 @@ class MainScreen(Screen):
     words: List[str] = ["attack", "shop"]
 
     class buttons:
-        ATTACK_BUTTON = Button("attack_button")
-        TRAIN_BUTTON = Button("train_button")
-        ELIXIR_POPUP = Button("elixir_popup")
-        GOLD_POPUP = Button("gold_popup")
+        ATTACK_BUTTON = TextButton("attack")
+        TRAIN_BUTTON = TemplateButton("train_button")
+        BOAT_BUTTON = TemplateButton("boat_button")
+        ELIXIR_POPUP = TemplateButton("elixir_popup")
+        GOLD_POPUP = TemplateButton("gold_popup")
 
     def collect_resources(self):
         self.zoom_out()

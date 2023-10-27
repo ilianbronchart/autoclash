@@ -1,7 +1,7 @@
 from typing import List
 import cv2
 import numpy as np
-from src.config import REFERENCE_SCREEN_SIZE, OCR_WHITE_THRESHOLD
+from src.config import REFERENCE_SCREEN_SIZE
 
 
 def click_event(event, x, y, flags, params):

@@ -45,9 +45,7 @@ class Screen:
         show_image(screenshot)
 
     def zoom_out(self):
-        center = self.window.center
+        pag.moveTo(self.window.rect.center.x, self.window.rect.center.y)
 
-        # scroll
-        pag.moveTo(center["x"], center["y"])
         for _ in range(100):
             pag.scroll(-100)

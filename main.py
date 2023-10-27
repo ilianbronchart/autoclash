@@ -2,11 +2,7 @@ from src.models.base import Rect
 from src.models.window import Window
 from src.config import Model
 import src.vision.tesseract as tess
-from src.vision.textdetection import detect_text
-import src.vision.preprocessing as preprocessing
-from src.utils import show_image
 from dotenv import load_dotenv
-import cv2
 
 
 def init():
@@ -18,14 +14,8 @@ def init():
 def main():
     window = Window()
     window.show()
-    screenshot = window.screenshot("assets/screens/")
+    screen = window.detect_screen()
     window.hide()
-
-    # processed = preprocessing.extract_white_text(screenshot)
-    # result = detect_text(processed)
-
-    # result = tess.rects_to_text(processed, result.rects, Model.BackBeat)
-    # result.draw(screenshot)
 
 
 if __name__ == "__main__":

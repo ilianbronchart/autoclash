@@ -1,6 +1,6 @@
 from typing import List
 from src.models.screen import Screen
-from src.models.button import Button
+from src.models.button import TemplateButton
 from time import sleep
 
 
@@ -21,8 +21,8 @@ class AttackScreen(Screen):
     ]
 
     class buttons:
-        NEXT_ATTACK_BUTTON = Button("next_attack_button")
-        END_BATTLE_BUTTON = Button("end_battle_button")
+        NEXT_ATTACK_BUTTON = TemplateButton("next_attack_button")
+        END_BATTLE_BUTTON = TemplateButton("end_battle_button")
 
     def next_attack(self, times: int = 1):
         print(f"window: {self}, times: {times}")
