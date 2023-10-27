@@ -50,8 +50,8 @@ def process_line(args):
             "--max_pages=1",
             "--strip_unrenderable_words",
             "--leading=32",
-            "--xsize=3200",
-            "--ysize=250",
+            "--xsize=3500",
+            "--ysize=400",
             "--char_spacing=1.0",
             "--exposure=0",
             "--unicharset_file=langdata/eng.unicharset",
@@ -61,7 +61,7 @@ def process_line(args):
     )
 
 
-def split_training_text(font, model_name, training_text_file, output_directory, num_examples):
+def split_training_text(font, training_text_file, output_directory, num_examples):
     create_dirs(output_directory)
     lines = get_lines(training_text_file, num_examples)
 

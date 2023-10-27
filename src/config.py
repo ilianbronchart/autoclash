@@ -13,4 +13,5 @@ OCR_WHITE_THRESHOLD = 220
 
 class Model(Enum):
     BackBeat = 'BackBeat'
-    SupercellMagic = 'SupercellMagic'
+    SupercellMagic = 'SupercellMagic' # Tesseract OCR model trained on Clash of Clans 
+    Eng = 'eng'

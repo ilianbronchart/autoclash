@@ -1,5 +1,5 @@
+from typing import List
 import cv2
-import pygetwindow as gw
 import numpy as np
 from src.config import REFERENCE_SCREEN_SIZE, OCR_WHITE_THRESHOLD
 
@@ -48,9 +48,9 @@ def filter_small_components(binary_img, min_area=50):
     return output
 
 
-def draw_boxes(screenshot, boxes):
-    for box in boxes:
-        x, y, w, h = box
-        cv2.rectangle(screenshot, (x, y), (x + w, y + h), (255, 0, 255), 2)
+def draw_rects(img, rects):
+    img = img.copy()
+    for x, y, w, h in rects:
+        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 2)
 
-    show_image(screenshot)
+    show_image(img) 

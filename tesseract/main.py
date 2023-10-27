@@ -1,5 +1,6 @@
 import argparse
 import subprocess
+from clean_training_data import clean_training_data
 from split_training_text import split_training_text
 
 TRAINING_TEXT_FILE = "langdata/eng.training_text"
@@ -27,7 +28,8 @@ def main():
         model_name = args.name
         output_directory = f"tesstrain/data/{model_name}-ground-truth"
         num_examples = args.n
-        split_training_text(args.font, model_name, TRAINING_TEXT_FILE, output_directory, num_examples)
+        split_training_text(args.font, TRAINING_TEXT_FILE, output_directory, num_examples)
+        clean_training_data(model_name, output_directory, num_examples)
 
     if args.train:
         if args.iterations is None:

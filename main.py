@@ -1,13 +1,14 @@
-from src.api.models.window import Window
-from src.api.models.screen import MainScreen, AttackScreen, TrainingScreen
-from src.utils import draw_boxes
+from src.models.window import Window
+from src.models.screen import MainScreen, AttackScreen, TrainingScreen
 from src.config import Model
-from src.tesseract import check_model_exists, image_to_data
+import src.tesseract as tess
+from src.textdetection import detect_text
 from dotenv import load_dotenv
 
 def init():
     load_dotenv()
-    check_model_exists(Model.BackBeat)
+    tess.check_model_exists(Model.BackBeat)
+    tess.check_model_exists(Model.SupercellMagic)
 
 
 def main():
@@ -17,7 +18,14 @@ def main():
     window.show()
 
     screenshot = window.screenshot()
-    image_to_data(screenshot, Model.BackBeat)
+    window.hide()
+
+    result = detect_text(screenshot)
+
+    result = tess.rects_to_text(screenshot, result.rects, Model.Eng)
+    print(result.text)
+    result.draw()
+
 
 
 

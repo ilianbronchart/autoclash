@@ -9,3 +9,5 @@ pytest
 pillow
 tqdm
 python-dotenv
+pydantic
+imutils
