@@ -1,9 +1,13 @@
+from src.models.base import Rect
 from src.models.window import Window
 from src.models.screen import MainScreen, AttackScreen, TrainingScreen
 from src.config import Model
 import src.tesseract as tess
 from src.textdetection import detect_text
 from dotenv import load_dotenv
+from src.connected_components import useful_preprocessing_steps
+import cv2
+
 
 def init():
     load_dotenv()
@@ -12,22 +16,10 @@ def init():
 
 
 def main():
-    init()
+    screenshot = cv2.imread("assets/screenshot.png")
 
-    window = Window()
-    window.show()
-
-    screenshot = window.screenshot()
-    window.hide()
-
-    result = detect_text(screenshot)
-
-    result = tess.rects_to_text(screenshot, result.rects, Model.Eng)
-    print(result.text)
-    result.draw()
+    useful_preprocessing_steps(screenshot)
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
