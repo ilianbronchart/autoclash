@@ -19,15 +19,18 @@ def click_event(event, x, y, flags, params):
 
 
 def show_image(img):
-    # Create a window named 'Image'
-    cv2.imshow("Image", img)
-    # Set the mouse callback function for the 'Image' window
-    # Pass the image as a parameter to the callback function
-    cv2.setMouseCallback("Image", click_event, {"img": img})
+    window_name = "Image"
+    cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+    cv2.imshow(window_name, img)
+    cv2.setMouseCallback(window_name, click_event, {"img": img})
+    cv2.setWindowProperty(window_name, cv2.WND_PROP_TOPMOST, 1)
+    cv2.setWindowProperty(
+        window_name, cv2.WND_PROP_TOPMOST, 0
+    )  # Not always necessary, but can help in some environments
 
     while True:
-        key = cv2.waitKey(1)
-        if key == 27:  # Check for ESC key
+        key = cv2.waitKey(1) & 0xFF
+        if key != 255:
             break
 
     cv2.destroyAllWindows()
