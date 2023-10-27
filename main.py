@@ -4,8 +4,9 @@ from src.models.screen import MainScreen, AttackScreen, TrainingScreen
 from src.config import Model
 import src.tesseract as tess
 from src.textdetection import detect_text
+import src.vision.preprocessing as preprocessing
+from src.utils import show_image
 from dotenv import load_dotenv
-from src.connected_components import useful_preprocessing_steps
 import cv2
 
 
@@ -16,9 +17,18 @@ def init():
 
 
 def main():
-    screenshot = cv2.imread("assets/screenshot.png")
+    window = Window()
+    window.show()
+    img = window.screenshot()
+    window.hide()
 
-    useful_preprocessing_steps(screenshot)
+    img = preprocessing.extract_white_text(img)
+
+    result = detect_text(img)
+    result.draw()
+
+    result = tess.rects_to_text(img, result.rects, Model.Eng)
+    # result.draw()
 
 
 if __name__ == "__main__":

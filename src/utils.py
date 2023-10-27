@@ -4,9 +4,32 @@ import numpy as np
 from src.config import REFERENCE_SCREEN_SIZE, OCR_WHITE_THRESHOLD
 
 
+def click_event(event, x, y, flags, params):
+    # Retrieve the image from the params
+    img = params["img"]
+
+    # Check for left mouse click event
+    if event == cv2.EVENT_LBUTTONDOWN:
+        # Get the color of the pixel at the clicked coordinates
+        # The returned color will be in BGR format
+        color = img[y, x]
+        # Convert the color to RGB format
+        color = (color[2], color[1], color[0])
+        print("Color at position (", x, ",", y, "):", color)
+
+
 def show_image(img):
+    # Create a window named 'Image'
     cv2.imshow("Image", img)
-    cv2.waitKey(0)
+    # Set the mouse callback function for the 'Image' window
+    # Pass the image as a parameter to the callback function
+    cv2.setMouseCallback("Image", click_event, {"img": img})
+
+    while True:
+        key = cv2.waitKey(1)
+        if key == 27:  # Check for ESC key
+            break
+
     cv2.destroyAllWindows()
 
 
