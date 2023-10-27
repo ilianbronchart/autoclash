@@ -1,9 +1,8 @@
 from src.models.base import Rect
 from src.models.window import Window
-from src.models.screen import MainScreen, AttackScreen, TrainingScreen
 from src.config import Model
-import src.tesseract as tess
-from src.textdetection import detect_text
+import src.vision.tesseract as tess
+from src.vision.textdetection import detect_text
 import src.vision.preprocessing as preprocessing
 from src.utils import show_image
 from dotenv import load_dotenv
@@ -19,16 +18,14 @@ def init():
 def main():
     window = Window()
     window.show()
-    img = window.screenshot()
+    screenshot = window.screenshot("assets/screens/")
     window.hide()
 
-    img = preprocessing.extract_white_text(img)
+    # processed = preprocessing.extract_white_text(screenshot)
+    # result = detect_text(processed)
 
-    result = detect_text(img)
-    result.draw()
-
-    result = tess.rects_to_text(img, result.rects, Model.Eng)
-    # result.draw()
+    # result = tess.rects_to_text(processed, result.rects, Model.BackBeat)
+    # result.draw(screenshot)
 
 
 if __name__ == "__main__":

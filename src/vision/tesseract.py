@@ -67,12 +67,14 @@ class OCRResult:
 
     def draw(
         self,
+        img=None,
         font_scale: float = 0.5,
         font_thickness: int = 1,
         text_color: tuple = (0, 255, 255),
         padding: int = 5,
     ):
-        img = self.img.copy()
+        if img is None:
+            img = self.img.copy()
 
         # Set font type
         font = cv2.FONT_HERSHEY_SIMPLEX
